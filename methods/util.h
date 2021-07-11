@@ -40,8 +40,12 @@ int read_txt_data(					// read data (text) from disk
 	const char *fname,					// address of data set
 	float **data,						// data objects (return)
 	float **norm_d);					// l2-norm of data objects (return)
-
 // -----------------------------------------------------------------------------
+int calculate_k_norm(
+        int d,//dimensionality
+        float *data,//input data
+        float *norm_d);// l2-norm (return)
+    // -----------------------------------------------------------------------------
 int read_bin_data(					// read data (binary) from disk
 	int   n,							// number of data objects
 	int   d,							// dimensionality

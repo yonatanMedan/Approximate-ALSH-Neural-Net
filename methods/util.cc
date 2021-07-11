@@ -87,6 +87,27 @@ int read_txt_data(					// read data (text) from disk
 	return 0;
 }
 
+int calculate_k_norm(
+        int d,//dimensionality
+        float *data,//input data
+        float *norm_d// l2-norm (return)
+        ){
+    memset(norm_d, 0.0f, NORM_K * SIZEFLOAT);
+    float tmp = 0.0f;
+    for (int j = 0; j < d; ++j) {
+        tmp = data[j];
+
+        norm_d[0] += SQR(tmp);
+        for (int t = 1; t < NORM_K; ++t) {
+            if (j < 8 * t) norm_d[t] += SQR(tmp);
+        }
+    }
+    for (int t = 1; t < NORM_K; ++t) {
+        norm_d[t] = sqrt(norm_d[0] - norm_d[t]);
+    }
+    norm_d[0] = sqrt(norm_d[0]);
+    return 0;
+}
 // -----------------------------------------------------------------------------
 int read_bin_data(					// read data (binary) from disk
 	int   n,							// number of data objects
@@ -108,20 +129,7 @@ int read_bin_data(					// read data (binary) from disk
 		fread(data[i], SIZEFLOAT, d, fp);
 
 		// calc norm_d
-		memset(norm_d[i], 0.0f, NORM_K * SIZEFLOAT);
-		float tmp = 0.0f;
-		for (int j = 0; j < d; ++j) {
-			tmp = data[i][j];
-
-			norm_d[i][0] += SQR(tmp);
-			for (int t = 1; t < NORM_K; ++t) {
-				if (j < 8 * t) norm_d[i][t] += SQR(tmp);
-			}
-		}
-		for (int t = 1; t < NORM_K; ++t) {
-			norm_d[i][t] = sqrt(norm_d[i][0] - norm_d[i][t]);
-		}
-		norm_d[i][0] = sqrt(norm_d[i][0]);
+        calculate_k_norm(d,data[i],norm_d[i]);
 		++i;
 	}
 	fclose(fp);
