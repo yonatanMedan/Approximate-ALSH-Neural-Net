@@ -14,6 +14,7 @@ using namespace std::chrono;
 #include "Relu.h"
 #include "Softmax.h"
 #include "mnist-master/include/mnist/mnist_reader.hpp"
+#include "MIPSLayerCsvLoader.h"
 using namespace mips;
 
 
@@ -21,54 +22,19 @@ using namespace mips;
 int main(int nargs, char **args)
 {
 //	srand(6);						// srand((unsigned) time(NULL));
-//	//usage();
-//
-//	char   data_set[200] = "../data/Mnist/Mnist.ds";			// address of data set
-////	char   query_set[200];			// address of query set
-////	char   truth_set[200];			// address of ground truth file
-////	char   out_path[200];			// output path
-//
-//	int    alg       = -1;			// which algorithm?
-//	int    n         = 60000;			// number of data objects
 	int    qn        = 1;			// number of query objects
 	int    d         = LAYER_DIM;			// dimensionality
-//	int    K         = -1;			// #tables for sign-alsh and simple-lsh
-//	int    m         = -1;			// param for l2-alsh, l2-alsh2, sign-alsh
-//	float  U         = -1.0f;		// param for l2-alsh, l2-alsh2, sign-alsh
-//	float  nn_ratio  = 2;		// approximation ratio of ANN search
-//	float  mip_ratio = 0.5;		// approximation ratio of AMIP search
-//
-//	float  **data    = NULL;		// data objects
+
 	float  **query   = NULL;		// query objects
-//	float  **norm_d  = NULL;		// l2-norm of data  objects
-//	float  **norm_q  = NULL;		// l2-norm of query objects
-//	Result **R       = NULL;		// truth set
-//	float  **pre     = NULL;		// precision array
-//	float  **recall  = NULL;		// recall array
-//	bool   failed    = false;
-//	int    cnt       = 1;
-//
-//	// -------------------------------------------------------------------------
-//	//  read data set, query set, and ground truth file
-//	// -------------------------------------------------------------------------
-//	data   = new float*[n];
-//	norm_d = new float*[n];
-//	for (int i = 0; i < n; ++i) {
-//		data[i]   = new float[d];
-//		norm_d[i] = new float[NORM_K];
-//	}
-//	if (read_bin_data(n, d, true, data_set, data, norm_d)) exit(1);
-//	// -------------------------------------------------------------------------
-//	//  methods
-//	// -------------------------------------------------------------------------
-//    H2_ALSH *lsh = new H2_ALSH(n, d, nn_ratio, mip_ratio, (const float **) data, (const float **) norm_d);
-//    lsh->display();
+///////////////////////////////////////LOAD WEIGHTS///////////////////////////////////////////
+    MIPSLayerCsvLoader csvLayerLoader = MIPSLayerCsvLoader("../data/FFNNMinst/layer1_weights.csv","../data/FFNNMinst/layer1_bias.csv");
+///////////////////////////////////////LOAD DATASET//////////////////////////////////////////
     auto dataset = mnist::read_dataset<std::vector, std::vector, float, uint8_t>("../data/Mnist/test");
     std::cout << "Nbr of training images = " << dataset.training_images.size() << std::endl;
     std::cout << "Nbr of training labels = " << dataset.training_labels.size() << std::endl;
     std::cout << "Nbr of test images = " << dataset.test_images.size() << std::endl;
     std::cout << "Nbr of test labels = " << dataset.test_labels.size() << std::endl;
-    
+
     query =new float *[qn];
     query[0] = new float[d];
     float ** output = new float *[qn];
