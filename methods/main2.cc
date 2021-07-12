@@ -12,6 +12,7 @@ using namespace std::chrono;
 #include "pre_recall.h"
 #include "MIPSLayerLoader.h"
 #include "Relu.h"
+#include "Softmax.h"
 using namespace mips;
 
 
@@ -73,9 +74,11 @@ int main(int nargs, char **args)
     MIPSLayerLoader layerLoader = MIPSLayerLoader();
     MIPSLayer * layer = layerLoader.getLayer();
     Relu * relu_layer = new Relu(layer->getOutputDim());
+    Softmax * softmax_layer = new Softmax(relu_layer->getOutputDim());
     Sequential sequentialNN = Sequential();
     sequentialNN.addLayer(layer);
     sequentialNN.addLayer(relu_layer);
+    sequentialNN.addLayer(softmax_layer);
     auto start = high_resolution_clock::now();
 
     sequentialNN.forward(query,qn,output);
