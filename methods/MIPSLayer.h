@@ -7,22 +7,28 @@
 #include "h2_alsh.h"
 #include "util.h"
 #include "array"
-
+#include "Layer.h"
 using namespace mips;
-class MIPSLayer {
+class MIPSLayer :public Layer {
 public:
-    MIPSLayer(int size, int dim,float  nn_ratio,float  mip_ratio,  float ** weights, int top_k ):size(size),dim(dim),nn_ratio(nn_ratio),mip_ratio(mip_ratio),weights(weights),top_k(top_k){
-        norm_w = new float*[size];
-        for (int i = 0; i < size; ++i) {
+    MIPSLayer(int output_dim, int input_dim, float  nn_ratio, float  mip_ratio, float ** weights, int top_k , bool find_neg=false): output_dim(output_dim), dim(input_dim), nn_ratio(nn_ratio), mip_ratio(mip_ratio), weights(weights), top_k(top_k), find_neg(find_neg){
+        norm_w = new float*[output_dim];
+        for (int i = 0; i < output_dim; ++i) {
             norm_w[i] = new float[NORM_K];
-            calculate_k_norm(dim,weights[i],norm_w[i]);
+            calculate_k_norm(input_dim, weights[i], norm_w[i]);
 
         }
-        this->lsh = new H2_ALSH(size,dim,nn_ratio,mip_ratio,(const float **) weights,(const float **) norm_w);
+        this->lsh = new H2_ALSH(output_dim, input_dim, nn_ratio, mip_ratio, (const float **) weights, (const float **) norm_w);
 
     }
-    ~MIPSLayer(){
-        for (int i = 0; i < size; ++i) {
+    int getInputDim(){
+        return dim;
+    }
+    int getOutputDim(){
+        return output_dim;
+    }
+    virtual ~MIPSLayer(){
+        for (int i = 0; i < output_dim; ++i) {
             delete[] norm_w[i];
         }
         delete[] norm_w;
@@ -32,15 +38,15 @@ public:
             input[i] = -input[i];
         }
     }
-    void Multiply( float ** input,int input_size,int input_dim,
-                  float ** output,int output_dim, bool find_neg=false){
+    void forward( float ** input,int input_size,
+                  float ** output){
         //delete me
         float ** norm_q = new float *[input_size];
 
         for (int i = 0; i < input_size; ++i) {
             norm_q[i] = new float[NORM_K];
-            memset(output[i],0.0f,output_dim*sizeof(float));
-            calculate_k_norm(input_dim,input[i],norm_q[i]);
+            memset(output[i],0.0f,getOutputDim()*sizeof(float));
+            calculate_k_norm(getInputDim(),input[i],norm_q[i]);
             MaxK_List* list = new MaxK_List(top_k);
             lsh->kmip(top_k,(const float *)input[i],(const float *)norm_q[i],list);
             for (int j = 0; j < top_k; ++j) {
@@ -49,7 +55,7 @@ public:
 
             }
             if(find_neg){
-                make_negative(input[i],input_dim);
+                make_negative(input[i],getInputDim());
                 MaxK_List* list_neg = new MaxK_List(top_k);
                 lsh->kmip(top_k,(const float *)input[i],(const float *)norm_q[i],list_neg);
                 for (int j = 0; j < top_k; ++j) {
@@ -71,7 +77,7 @@ public:
     }
 
 protected:
-    int size;
+    int output_dim;
     int dim;
     float  nn_ratio;		// approximation ratio of ANN search arround 2
     float  mip_ratio;       // 0.5-0.99
@@ -79,6 +85,7 @@ protected:
     float ** norm_w;
     int top_k;
     H2_ALSH * lsh;
+    bool find_neg;
 
 
 };

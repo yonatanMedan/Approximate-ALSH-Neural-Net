@@ -5,12 +5,13 @@
 #include <iostream>
 using namespace std;
 using namespace std::chrono;
-
+#include "Sequential.h"
 #include "def.h"
 #include "util.h"
 #include "amips.h"
 #include "pre_recall.h"
 #include "MIPSLayerLoader.h"
+#include "Relu.h"
 using namespace mips;
 
 
@@ -71,9 +72,13 @@ int main(int nargs, char **args)
     }
     MIPSLayerLoader layerLoader = MIPSLayerLoader();
     MIPSLayer * layer = layerLoader.getLayer();
+    Relu * relu_layer = new Relu(layer->getOutputDim());
+    Sequential sequentialNN = Sequential();
+    sequentialNN.addLayer(layer);
+    sequentialNN.addLayer(relu_layer);
     auto start = high_resolution_clock::now();
 
-    layer->Multiply(query,qn,d,output,LAYER_DIM,true);
+    sequentialNN.forward(query,qn,output);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     cout << "Time taken by function: "
@@ -93,7 +98,7 @@ int main(int nargs, char **args)
 //    int TOP_K = 20;
 //    MaxK_List* list = new MaxK_List(TOP_K);
 //    lsh->kmip(TOP_K,(const float *)query[0],(const float *)norm_q[0],list);
-//    list->size();
+//    list->output_dim();
 
 
 

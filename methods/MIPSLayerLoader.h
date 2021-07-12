@@ -23,14 +23,14 @@ public:
             for (int j = 0; j < LAYER_DIM; ++j) {
                 if(i>12 && i<23){
                     weights[i][j] = 0.5;
-                } else if(i>52 && i<63){
+                } else if(i>25 && i<36){
                     weights[i][j] = -0.5;
                 }else{
                     weights[i][j] = 0;
                 }
             }
         }
-        layer = new MIPSLayer(LAYER_SIZE,LAYER_DIM, 2, 0.99, weights,10);
+        layer = new MIPSLayer(LAYER_SIZE,LAYER_DIM, 2, 0.99, weights,10, true);
 
     };
     ~MIPSLayerLoader(){
