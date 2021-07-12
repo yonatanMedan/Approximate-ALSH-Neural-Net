@@ -18,6 +18,8 @@ public:
     MIPSLayerLoader(){
 
         this->weights = new float *[LAYER_SIZE];
+        this->bias = new float[LAYER_SIZE];
+
         for (int i = 0; i < LAYER_SIZE; ++i) {
             weights[i] = new float [LAYER_DIM];
             for (int j = 0; j < LAYER_DIM; ++j) {
@@ -30,7 +32,10 @@ public:
                 }
             }
         }
-        layer = new MIPSLayer(LAYER_SIZE,LAYER_DIM, 2, 0.99, weights,10, true);
+        for (int i = 0; i < LAYER_SIZE; ++i) {
+            this->bias[i] = 1;
+        }
+        layer = new MIPSLayer(LAYER_SIZE,LAYER_DIM, 2, 0.99, weights, bias,10, true);
 
     };
     ~MIPSLayerLoader(){
@@ -45,6 +50,7 @@ public:
     }
 protected:
     float ** weights;
+    float * bias;
     MIPSLayer * layer;
 
 

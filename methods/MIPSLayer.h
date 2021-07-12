@@ -11,7 +11,8 @@
 using namespace mips;
 class MIPSLayer :public Layer {
 public:
-    MIPSLayer(int output_dim, int input_dim, float  nn_ratio, float  mip_ratio, float ** weights, int top_k , bool find_neg=false): output_dim(output_dim), dim(input_dim), nn_ratio(nn_ratio), mip_ratio(mip_ratio), weights(weights), top_k(top_k), find_neg(find_neg){
+    MIPSLayer(int output_dim, int input_dim, float  nn_ratio, float  mip_ratio, float ** weights,float * bias, int top_k , bool find_neg=false):
+    output_dim(output_dim), dim(input_dim), nn_ratio(nn_ratio), mip_ratio(mip_ratio), weights(weights),bias(bias), top_k(top_k), find_neg(find_neg){
         norm_w = new float*[output_dim];
         for (int i = 0; i < output_dim; ++i) {
             norm_w[i] = new float[NORM_K];
@@ -45,13 +46,16 @@ public:
 
         for (int i = 0; i < input_size; ++i) {
             norm_q[i] = new float[NORM_K];
-            memset(output[i],0.0f,getOutputDim()*sizeof(float));
+            for (int j = 0; j < getOutputDim(); ++j) {
+                output[i][j] = bias[j];
+            }
+//            memset(output[i],0.0f,getOutputDim()*sizeof(float));
             calculate_k_norm(getInputDim(),input[i],norm_q[i]);
             MaxK_List* list = new MaxK_List(top_k);
             lsh->kmip(top_k,(const float *)input[i],(const float *)norm_q[i],list);
             for (int j = 0; j < top_k; ++j) {
-                output[i][list->ith_id(j)-1] = list->ith_key(j);
-                printf("neuron: %d activated with product of: %f\n",list->ith_id(j)-1,list->ith_key(j));
+                output[i][list->ith_id(j)-1] += list->ith_key(j);
+                printf("neuron: %d activated with product of: %f + bias of %f\n",list->ith_id(j)-1, list->ith_key(j), bias[list->ith_id(j)-1]);
 
             }
             if(find_neg){
@@ -60,8 +64,8 @@ public:
                 lsh->kmip(top_k,(const float *)input[i],(const float *)norm_q[i],list_neg);
                 for (int j = 0; j < top_k; ++j) {
                     if(list_neg->ith_key(j)>=list->min_key()){
-                        output[i][list_neg->ith_id(j)-1] = -list_neg->ith_key(j);
-                        printf("neuron: %d activated with product of: %f\n",list_neg->ith_id(j)-1,-list_neg->ith_key(j));
+                        output[i][list_neg->ith_id(j)-1] += -list_neg->ith_key(j);
+                        printf("neuron: %d activated with product of: %f + bias of %f\n",list_neg->ith_id(j)-1,-list_neg->ith_key(j),bias[list_neg->ith_id(j)-1]);
 
                     }
                 }
@@ -82,6 +86,7 @@ protected:
     float  nn_ratio;		// approximation ratio of ANN search arround 2
     float  mip_ratio;       // 0.5-0.99
     float ** weights;
+    float * bias;
     float ** norm_w;
     int top_k;
     H2_ALSH * lsh;

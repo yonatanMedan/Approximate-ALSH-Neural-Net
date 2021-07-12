@@ -78,7 +78,7 @@ int main(int nargs, char **args)
     Sequential sequentialNN = Sequential();
     sequentialNN.addLayer(layer);
     sequentialNN.addLayer(relu_layer);
-    sequentialNN.addLayer(softmax_layer);
+//    sequentialNN.addLayer(softmax_layer);
     auto start = high_resolution_clock::now();
 
     sequentialNN.forward(query,qn,output);
