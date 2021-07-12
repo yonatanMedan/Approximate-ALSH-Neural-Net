@@ -21,10 +21,16 @@ public:
         for (int i = 0; i < LAYER_SIZE; ++i) {
             weights[i] = new float [LAYER_DIM];
             for (int j = 0; j < LAYER_DIM; ++j) {
-                weights[i][j] = i+j;
+                if(i>12 && i<23){
+                    weights[i][j] = 0.5;
+                } else if(i>52 && i<63){
+                    weights[i][j] = -0.5;
+                }else{
+                    weights[i][j] = 0;
+                }
             }
         }
-        layer = new MIPSLayer(LAYER_SIZE,LAYER_DIM, 2, 0.9, weights,10);
+        layer = new MIPSLayer(LAYER_SIZE,LAYER_DIM, 2, 0.99, weights,10);
 
     };
     ~MIPSLayerLoader(){

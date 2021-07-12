@@ -1,6 +1,10 @@
 #include <iostream>
 #include <algorithm>
 #include <cstring>
+#include <chrono>
+#include <iostream>
+using namespace std;
+using namespace std::chrono;
 
 #include "def.h"
 #include "util.h"
@@ -67,7 +71,23 @@ int main(int nargs, char **args)
     }
     MIPSLayerLoader layerLoader = MIPSLayerLoader();
     MIPSLayer * layer = layerLoader.getLayer();
+    auto start = high_resolution_clock::now();
+
     layer->Multiply(query,qn,d,output,LAYER_DIM,true);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cout << "Time taken by function: "
+         << duration.count() << " microseconds" << endl;
+
+    for (int i = 0; i < qn; ++i) {
+        printf("[");
+
+        for (int j = 0; j < LAYER_SIZE; ++j) {
+            printf("%f,",output[i][j]);
+        }
+        printf("]\n");
+    }
+
 
 //    calculate_k_norm(d,query[0],norm_q[0]);
 //    int TOP_K = 20;
@@ -90,8 +110,10 @@ int main(int nargs, char **args)
 //
     for (int i = 0; i < qn; ++i) {
         delete[] query[i];
+        delete[] output[i];
     }
     delete[] query;
+    delete[] output;
 
 	return 0;
 }

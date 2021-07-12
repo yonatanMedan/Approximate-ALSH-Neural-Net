@@ -44,14 +44,20 @@ public:
             MaxK_List* list = new MaxK_List(top_k);
             lsh->kmip(top_k,(const float *)input[i],(const float *)norm_q[i],list);
             for (int j = 0; j < top_k; ++j) {
-                output[i][list->ith_id(j)] = list->ith_key(j);
+                output[i][list->ith_id(j)-1] = list->ith_key(j);
+                printf("neuron: %d activated with product of: %f\n",list->ith_id(j)-1,list->ith_key(j));
+
             }
             if(find_neg){
                 make_negative(input[i],input_dim);
                 MaxK_List* list_neg = new MaxK_List(top_k);
                 lsh->kmip(top_k,(const float *)input[i],(const float *)norm_q[i],list_neg);
                 for (int j = 0; j < top_k; ++j) {
-                    output[i][list_neg->ith_id(j)] = -list_neg->ith_key(j);
+                    if(list_neg->ith_key(j)>=list->min_key()){
+                        output[i][list_neg->ith_id(j)-1] = -list_neg->ith_key(j);
+                        printf("neuron: %d activated with product of: %f\n",list_neg->ith_id(j)-1,-list_neg->ith_key(j));
+
+                    }
                 }
             }
 
