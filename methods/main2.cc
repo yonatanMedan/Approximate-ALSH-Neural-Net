@@ -13,6 +13,7 @@ using namespace std::chrono;
 #include "MIPSLayerLoader.h"
 #include "Relu.h"
 #include "Softmax.h"
+#include "mnist-master/include/mnist/mnist_reader.hpp"
 using namespace mips;
 
 
@@ -62,6 +63,12 @@ int main(int nargs, char **args)
 //	// -------------------------------------------------------------------------
 //    H2_ALSH *lsh = new H2_ALSH(n, d, nn_ratio, mip_ratio, (const float **) data, (const float **) norm_d);
 //    lsh->display();
+    auto dataset = mnist::read_dataset<std::vector, std::vector, float, uint8_t>("../data/Mnist/test");
+    std::cout << "Nbr of training images = " << dataset.training_images.size() << std::endl;
+    std::cout << "Nbr of training labels = " << dataset.training_labels.size() << std::endl;
+    std::cout << "Nbr of test images = " << dataset.test_images.size() << std::endl;
+    std::cout << "Nbr of test labels = " << dataset.test_labels.size() << std::endl;
+    
     query =new float *[qn];
     query[0] = new float[d];
     float ** output = new float *[qn];
