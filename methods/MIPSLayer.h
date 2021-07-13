@@ -31,8 +31,13 @@ public:
     virtual ~MIPSLayer(){
         for (int i = 0; i < output_dim; ++i) {
             delete[] norm_w[i];
+            delete[] weights[i];
         }
+        delete[] bias;
         delete[] norm_w;
+        delete[] weights;
+        delete lsh;
+
     }
     void make_negative(float * input,int input_dim){
         for (int i = 0; i < input_dim; ++i) {
@@ -45,6 +50,8 @@ public:
         float ** norm_q = new float *[input_size];
 
         for (int i = 0; i < input_size; ++i) {
+            auto start = high_resolution_clock::now();
+
             norm_q[i] = new float[NORM_K];
             for (int j = 0; j < getOutputDim(); ++j) {
                 output[i][j] = bias[j];
@@ -55,21 +62,23 @@ public:
             lsh->kmip(top_k,(const float *)input[i],(const float *)norm_q[i],list);
             for (int j = 0; j < top_k; ++j) {
                 output[i][list->ith_id(j)-1] += list->ith_key(j);
-                printf("neuron: %d activated with product of: %f + bias of %f\n",list->ith_id(j)-1, list->ith_key(j), bias[list->ith_id(j)-1]);
+//                printf("neuron: %d activated with product of: %f + bias of %f\n",list->ith_id(j)-1, list->ith_key(j), bias[list->ith_id(j)-1]);
 
             }
+            delete list;
             if(find_neg){
                 make_negative(input[i],getInputDim());
                 MaxK_List* list_neg = new MaxK_List(top_k);
                 lsh->kmip(top_k,(const float *)input[i],(const float *)norm_q[i],list_neg);
                 for (int j = 0; j < top_k; ++j) {
-                    if(list_neg->ith_key(j)>=list->min_key()){
-                        output[i][list_neg->ith_id(j)-1] += -list_neg->ith_key(j);
-                        printf("neuron: %d activated with product of: %f + bias of %f\n",list_neg->ith_id(j)-1,-list_neg->ith_key(j),bias[list_neg->ith_id(j)-1]);
-
-                    }
+                    output[i][list_neg->ith_id(j)-1] += -list_neg->ith_key(j);
                 }
+                delete list_neg;
             }
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+//            printf("duration: %d",duration.count());
+
 
         }
 

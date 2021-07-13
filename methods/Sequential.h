@@ -19,6 +19,8 @@ public:
         float ** current_input = input;
         float ** current_output = NULL;
         for (int i = 0; i < layers.size(); ++i) {
+            auto start = high_resolution_clock::now();
+
             auto layerPtr = layers[i];
 
             if(i<layers.size()-1){
@@ -30,6 +32,9 @@ public:
             layerPtr->forward(current_input,input_size,current_output);
             destroyNKMatrix(current_input,input_size);
             current_input = current_output;
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+
         }
     }
 //    float ** createNKMatrix(int N_rows,int K_cols){
@@ -64,7 +69,9 @@ public:
         }
     }
     ~Sequential(){
-
+        for(auto layer: layers){
+            delete layer;
+        }
     }
 
 protected:

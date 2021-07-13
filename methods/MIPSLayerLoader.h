@@ -39,11 +39,11 @@ public:
 
     };
     ~MIPSLayerLoader(){
-        for (int i = 0; i < LAYER_SIZE; ++i) {
-            delete[] weights[i];
-        }
-        delete[] weights;
-        delete layer;
+//        for (int i = 0; i < LAYER_SIZE; ++i) {
+//            delete[] weights[i];
+//        }
+//        delete[] weights;
+//        delete layer;
     };
     MIPSLayer * getLayer(){
         return layer;

@@ -11,7 +11,7 @@
 #include "helper_funcs.h"
 class MIPSLayerCsvLoader {
 public:
-    MIPSLayerCsvLoader(const std::string& weights_path,const std::string& bias_path){
+    MIPSLayerCsvLoader(const std::string& weights_path,const std::string& bias_path,int top_k,float mip_ratio = 0.99){
         auto weights_vec = read_csv(weights_path);
         auto bias_vec = read_csv(bias_path);
         weights = createNKMatrix(weights_vec.size(),weights_vec[0].size());
@@ -25,7 +25,7 @@ public:
             bias[i] = bias_vec[i][0];
         }
 
-        layer = new MIPSLayer(weights_vec[0].size(),weights_vec.size(), 2, 0.99, weights, bias,10, true);
+        layer = new MIPSLayer(weights_vec.size(),weights_vec[0].size(), 2, mip_ratio, weights, bias,top_k, true);
     }
     std::vector<std::vector<float >> read_csv(const std::string& path){
         std::ifstream f;
@@ -48,11 +48,7 @@ public:
 
     }
     ~MIPSLayerCsvLoader(){
-        for (int i = 0; i < LAYER_SIZE; ++i) {
-            delete[] weights[i];
-        }
-        delete[] weights;
-        delete layer;
+
     };
     MIPSLayer * getLayer(){
         return layer;
