@@ -6,6 +6,9 @@
 #define L2_HASH_SEQUENTIAL_H
 #include "vector"
 #include "Layer.h"
+#include "util.h"
+#include "helper_funcs.h"
+using namespace mips;
 class Sequential:public Layer {
 public:
     Sequential(){
@@ -29,19 +32,19 @@ public:
             current_input = current_output;
         }
     }
-    float ** createNKMatrix(int N_rows,int K_cols){
-        float ** output = new float *[N_rows];
-        for (int i = 0; i < N_rows; ++i) {
-            output[i] = new float[K_cols];
-        }
-        return output;
-    }
-    void destroyNKMatrix(float **matrix, int N_rows){
-        for (int i = 0; i < N_rows; ++i) {
-            delete[] matrix[i];
-        }
-        delete[] matrix;
-    }
+//    float ** createNKMatrix(int N_rows,int K_cols){
+//        float ** output = new float *[N_rows];
+//        for (int i = 0; i < N_rows; ++i) {
+//            output[i] = new float[K_cols];
+//        }
+//        return output;
+//    }
+//    void destroyNKMatrix(float **matrix, int N_rows){
+//        for (int i = 0; i < N_rows; ++i) {
+//            delete[] matrix[i];
+//        }
+//        delete[] matrix;
+//    }
     void addLayer(Layer *layer){
         layers.push_back(layer);
     }

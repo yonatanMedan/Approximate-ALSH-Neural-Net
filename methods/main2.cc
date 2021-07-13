@@ -28,6 +28,8 @@ int main(int nargs, char **args)
 	float  **query   = NULL;		// query objects
 ///////////////////////////////////////LOAD WEIGHTS///////////////////////////////////////////
     MIPSLayerCsvLoader csvLayerLoader = MIPSLayerCsvLoader("../data/FFNNMinst/layer1_weights.csv","../data/FFNNMinst/layer1_bias.csv");
+    MIPSLayerCsvLoader csvLayer2Loader = MIPSLayerCsvLoader("../data/FFNNMinst/layer2_weights.csv","../data/FFNNMinst/layer2_bias.csv");
+
 ///////////////////////////////////////LOAD DATASET//////////////////////////////////////////
     auto dataset = mnist::read_dataset<std::vector, std::vector, float, uint8_t>("../data/Mnist/test");
     std::cout << "Nbr of training images = " << dataset.training_images.size() << std::endl;
