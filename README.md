@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This package uses ``k-Maximum Inner Product Search (k-MIPS)``` to approximate inference of Neural network `. It uses an implementation of ```H2_ALSH``` from the paper as follows:
+This package uses ```k-Maximum Inner Product Search (k-MIPS)``` to approximate inference of Neural network `. It uses an implementation of ```H2_ALSH``` from the paper as follows:
 
 ```bash
 Qiang Huang, Guihong Ma, Jianlin Feng, Qiong Fang, and Anthony K. H. Tung. Accurate and Fast
