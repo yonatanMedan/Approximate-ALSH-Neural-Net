@@ -1,8 +1,8 @@
-# ANNI: Approximating Artificial Neural Network Inference WithMaximum Inner Product Search
+# ANNI: Approximating Artificial Neural Network Inference With Maximum Inner Product Search
 
 ## Introduction
 This Package is an realization of https://github.com/yonatanMedan/Approximate-ALSH-Neural-Net/blob/cleaning/Approximating-NN-With_ALSH.pdf written by Yonatan Medan.
-In package we use ```k-Maximum Inner Product Search (k-MIPS)``` to approximate inference of Neural network `. It uses an implementation of ```H2_ALSH``` from the paper as follows:
+In this package we use ```k-Maximum Inner Product Search (k-MIPS)``` to approximate inference of Neural network `. It uses an implementation of ```H2_ALSH``` from the paper as follows:
 
 ```bash
 Qiang Huang, Guihong Ma, Jianlin Feng, Qiong Fang, and Anthony K. H. Tung. Accurate and Fast
