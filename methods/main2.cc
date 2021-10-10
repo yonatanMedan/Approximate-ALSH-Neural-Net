@@ -19,7 +19,7 @@ using namespace mips;
 int main(int nargs, char **args)
 {
     int    cnt       = 1;
-    int topk = 80; //default number of active neurons for the first layer
+    int topk = 40; //default number of active neurons for the first layer
     while (cnt < nargs) {
         if (strcmp(args[cnt], "-topk") == 0) {
             topk = atoi(args[++cnt]);
