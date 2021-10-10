@@ -22,18 +22,7 @@ cd H2_ALSH
 make
 ```
 
-## Datasets
 
-We use four real-life datasets [Sift](https://drive.google.com/open?id=1dAFbjQWoBIAW30lGzTXaf_w7DxBSUzoN), [Gist](https://drive.google.com/open?id=1r1rsSm6-IdWX2-8eFJkChFfP0Ej7TYM4), [Netflix](https://drive.google.com/open?id=1bJQftqxlC8u4ijDf5gpEnw1tJE2nLfoG), and [Yahoo](https://drive.google.com/open?id=18k0ISgjtQhHHqoGi8A96Fm-Q2gX_jxgw) for comparison. The statistics of the datasets are summarized in the following table:
-
-| Datasets | #Objects  | #Queries | Dimensionality | Data Size |
-| -------- | --------- | -------- | -------------- | --------- |
-| Sift     | 1,000,000 | 1,000    | 128            | 512.0 MB  |
-| Netflix  | 17,770    | 1,000    | 300            | 21.3 MB   |
-| Yahoo    | 624,961   | 1,000    | 300            | 750.0 MB  |
-| Gist     | 1,000,000 | 1,000    | 960            | 3.8 GB    |
-
-## Run Experiments
 
 ```bash
 Usage: alsh [OPTIONS]
