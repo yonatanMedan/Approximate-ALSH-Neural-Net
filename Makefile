@@ -9,7 +9,7 @@ CPPFLAGS=-w -O0 -Wall -Wextra
 .PHONY: clean
 
 all: ${OBJS2}
-	${CXX} ${CPPFLAGS} -o aproximate-nn-minst ${OBJS2}
+	${CXX} ${CPPFLAGS} -o approximate-nn-minst ${OBJS2}
 
 
 clean:
